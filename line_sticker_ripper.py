@@ -1,30 +1,42 @@
 import os
 import re
-import urllib.request
+import requests
+import threading
 
+VERSION = '1.0'
 regex_url = r'^https://store.line.me/stickershop/product/\d*/\w*$'
-regex_title = r'mdCMN38Item01Ttl">([a-zA-Z0-9 !/;,\\\.\-\?\+\*]*)</p>'
+regex_title = r'<p class="mdCMN38Item01Ttl">(.*)</p>'
 regex_image = r'background-image:url\(([\w\d:/\.\-]*);'
+sticker_folder = ''
 
 def main():
     line_url = get_url()
 
-    data = urllib.request.urlopen(line_url)
-    byte_arr = data.read()
+    data = requests.get(line_url)
+    byte_arr = data.content
     html_string = byte_arr.decode('utf8')
 
-    title = re.match(regex_title, html_string)
+    title = re.search(regex_title, html_string).group(1)
     images = re.findall(regex_image, html_string)
+    download_folder = os.path.join(sticker_folder, title)
 
-    folder = 'stickers/{}/'.format(title)
+    if not os.path.exists(download_folder):
+        os.mkdir(download_folder)
+
+    print('Downloading {} images to .../stickers/{}/'.format(len(images) // 2, title))
 
     for i in range(0, len(images), 2):
-        download_image(images[i], '{}{}.png'.format(folder, str(i // 2)))
+        download_thread = threading.Thread(target=download_image, args=(images[i],'{}{}.png'.format(download_folder, str(i // 2))))
+        download_thread.start()
+        download_thread.join()
+    
+    input('Download complete. Please press enter to close.')
 
 def download_image(image_url, file_name):
-    data = urllib.request.urlopen(image_url)
-
+    data = requests.get(image_url)
     file = open(file_name, 'wb')
+    file.write(data.content)
+    file.close()
 
 
 def get_url():
@@ -44,7 +56,8 @@ def get_url():
     
 
 if __name__ == '__main__':
-    if not os.path.exists('/stickers/'):
-        os.mkdir('/stickers/')
+    sticker_folder = os.path.join(os.getcwd(), 'stickers')
+    if not os.path.exists(sticker_folder):
+        os.mkdir(sticker_folder)
 
     main()
