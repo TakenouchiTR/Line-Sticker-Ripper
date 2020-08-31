@@ -30,7 +30,7 @@ def main():
 
     for i in range(0, len(images), 2):
         download_thread = threading.Thread(target=download_image, 
-          args=(images[i],'{}{}.png'.format(download_folder, str(i // 2))))
+          args=(images[i], os.path.join(download_folder, str(i//2) + ".png")))
         download_thread.start()
         download_thread.join()
     
