@@ -25,10 +25,12 @@ def main():
     if not os.path.exists(download_folder):
         os.mkdir(download_folder)
 
-    print('Downloading {} images to .../stickers/{}/'.format(len(images) // 2, title))
+    print('Downloading {} images to .../stickers/{}/'.format(
+        len(images) // 2, title))
 
     for i in range(0, len(images), 2):
-        download_thread = threading.Thread(target=download_image, args=(images[i],'{}{}.png'.format(download_folder, str(i // 2))))
+        download_thread = threading.Thread(target=download_image, 
+          args=(images[i],'{}{}.png'.format(download_folder, str(i // 2))))
         download_thread.start()
         download_thread.join()
     
@@ -50,7 +52,8 @@ def get_url():
 
         if re.search(regex_url, line_url) == None:
             print('Url is not valid.')
-            print('Please input the entire URL for the store page (https://store.line.me/stickershop/product/<id>/<lang>)\n')
+            print('Please input the entire URL for the store page' +
+              '(https://store.line.me/stickershop/product/<id>/<lang>)\n')
         else:
             valid_url = True
 
