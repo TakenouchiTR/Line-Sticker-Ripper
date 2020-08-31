@@ -53,7 +53,7 @@ def get_url():
         if re.search(regex_url, line_url) == None:
             print('Url is not valid.')
             print('Please input the entire URL for the store page' +
-              '(https://store.line.me/stickershop/product/<id>/<lang>)\n')
+              '(https://store.line.me/stickershop/product/<id>/)\n')
         else:
             valid_url = True
 
