@@ -28,11 +28,15 @@ def main():
     print('Downloading {} images to .../stickers/{}/'.format(
         len(images) // 2, title))
 
-    for i in range(0, len(images), 2):
-        download_thread = threading.Thread(target=download_image, 
-          args=(images[i], os.path.join(download_folder, str(i//2) + ".png")))
-        download_thread.start()
-        download_thread.join()
+    threads = []
+
+    for i in range(0, len(images) // 2):
+        threads.append(threading.Thread(target=download_image, 
+          args=(images[i * 2], os.path.join(download_folder, str(i) + ".png"))))
+        threads[i].start()
+
+    for thread in threads:
+        thread.join()
     
     input('Download complete. Please press enter to close.')
 
