@@ -5,7 +5,7 @@ import threading
 
 VERSION = '1.0'
 regex_url = r'^https://store.line.me/stickershop/product/\d+/*\w*$'
-regex_title = r'<p class="mdCMN38Item01Ttl">(.*)</p>'
+regex_title = r'<p class="mdCMN38Item01Ttl" data-test=".*">(.*)</p>'
 regex_image = r'background-image:url\(([\w\d:/\.\-]*);'
 regex_illegal = r'([\/:*?"<>|])'
 sticker_folder = ''
